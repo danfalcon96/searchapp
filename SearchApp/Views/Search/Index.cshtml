@@ -1,0 +1,52 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    @Scripts.Render("~/bundles/jquery")
+</head>
+<body>
+    <div> 
+        <input id="txtSearch" name="search-txt" type="text"/>
+        <button id="btnSearch">Search</button>
+        <div id="txtResult">
+
+        </div>
+    </div>
+    <script type="text/javascript">
+        $("#btnSearch").on("click", function () {
+            alert(document.querySelector("#txtSearch").value);
+            search(document.querySelector("#txtSearch").value);
+        });
+
+        var search = function (name) {
+            $.ajax({
+                url: "/Search/Index",
+                method: "POST",
+                data: { name: name },
+                dataType: "json"
+            })
+                .done(function (res) {
+                    msg = JSON.parse(res);
+                    var stringresult = "<p> Appointment Code: " + msg.data[0].appointmentCode + "</p>";
+                    stringresult += "<p> Schedule: " + msg.data[0].schedule + "</p>";
+                    stringresult += "<p> First Name: " + msg.data[0].application.firstName + "</p>";
+                    stringresult += "<p> Middle Name: " + msg.data[0].application.middleName + "</p>";
+                    stringresult += "<p> Last Name: " + msg.data[0].application.lastName + "</p>";
+                    stringresult += "<p> Email" + msg.data[0].application.email + "</p>";
+
+                    document.querySelector("#txtResult").innerHTML = stringresult;
+
+                })
+                .fail(function (jqXHR, textStatus) {
+                    alert("Request failed: " + textStatus);
+                });
+        }
+    </script>
+</body>
+</html>
